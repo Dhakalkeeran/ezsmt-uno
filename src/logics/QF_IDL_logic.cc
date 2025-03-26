@@ -9,7 +9,7 @@ string QF_IDL_logic::SMT_LOGIC_NAME() { return "QF_IDL";}
 
 string QF_IDL_logic::getDiffAssertionStatement(TheoryStatement* statement) {
     if (statement->leftElements.size() > 1) {
-        LOG(FATAL) << "Invalid syntax for diff statment. More than one term not allowed." << endl;
+        LOG(ERROR) << "Invalid syntax for diff statment. More than one term not allowed." << endl;
     }
 
     auto element = statement->leftElements.front();
@@ -23,7 +23,7 @@ string QF_IDL_logic::getDiffAssertionStatement(TheoryStatement* statement) {
             }
             else if (auto symbolicTerm = dynamic_cast<SymbolicTerm*>(child)) {
                 if (++count > 2) {
-                    LOG(FATAL) << "Invalid syntax for diff statment. More than two variables not allowed." << endl;
+                    LOG(ERROR) << "Invalid syntax for diff statment. More than two variables not allowed." << endl;
                 }
             }
         }
@@ -35,13 +35,13 @@ string QF_IDL_logic::getDiffAssertionStatement(TheoryStatement* statement) {
         countVariables(expressionTerm, variableCount);     
 
         if (expressionTerm->operation->name != "-") {
-            LOG(FATAL) << "Invalid syntax for diff statment. Only difference operation is allowed." << endl;
+            LOG(ERROR) << "Invalid syntax for diff statment. Only difference operation is allowed." << endl;
         }
     }
 
     string operation = statement->operation->name;
     if (operation != "<=") {
-        LOG(FATAL) << "Invalid syntax for diff statment. Only <= operator is allowed with IDL logic." << endl;
+        LOG(ERROR) << "Invalid syntax for diff statment. Only <= operator is allowed with IDL logic." << endl;
     }
 
     auto diffStatement = SMT::Expr(operation, {toString(element), SMT::ToString(statement->rightTerm)});
@@ -58,7 +58,7 @@ void QF_IDL_logic::getAssertionStatements(std::ostringstream &output) {
             assertionStatement = getDomAssertionStatement(statement);
         }
         else {
-            LOG(FATAL) << "The " << statement->symbolicTerm->name << " statement is not supported with the " << SMT_LOGIC_NAME() << " logic.";
+            LOG(ERROR) << "The " << statement->symbolicTerm->name << " statement is not supported with the " << SMT_LOGIC_NAME() << " logic.";
         }
 
         string assertion = SMT::Assert(SMT::Expr("=", {SMT::Var(statement->statementAtom), assertionStatement}));

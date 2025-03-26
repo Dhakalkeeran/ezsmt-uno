@@ -46,11 +46,11 @@ string QF_LIA_logic::getString(float value) {
 }
 
 string QF_LIA_logic::getIndividualRealTermAssertionStatement(ITheoryTerm* rightTerm, RealTerm* realTerm) {
-    LOG(FATAL) << "Real Term not allowed in LIA logic." << endl;
+    LOG(ERROR) << "Real Term not allowed in LIA logic." << endl;
 }
 
 float QF_LIA_logic::getRealTermValue(RealTerm* num) {
-    LOG(FATAL) << "Real Term not allowed in LIA logic." << endl;
+    LOG(ERROR) << "Real Term not allowed in LIA logic." << endl;
 }
 
 float QF_LIA_logic::solveExpression(ExpressionTerm* expression) {
@@ -70,7 +70,7 @@ float QF_LIA_logic::solveExpression(ExpressionTerm* expression) {
             termValue = solveExpression(expression);
         }
         else {
-            LOG(FATAL) << "Invalid syntax for dom statement." << endl;
+            LOG(ERROR) << "Invalid syntax for dom statement." << endl;
         }
 
         // Apply the operation
@@ -100,7 +100,7 @@ float QF_LIA_logic::getTermValue(ITheoryTerm* term) {
     else if (auto exp = dynamic_cast<ExpressionTerm*>(term)) {
         return solveExpression(exp);
     }
-    LOG(FATAL) << "Invalid syntax for dom statement." << endl;
+    LOG(ERROR) << "Invalid syntax for dom statement." << endl;
 }
 
 tuple<float, float> QF_LIA_logic::getLowerAndUpperBounds(ExpressionTerm* domainExpression) {
@@ -253,7 +253,7 @@ void QF_LIA_logic::getAssertionStatements(std::ostringstream &output) {
         }
 
         else {
-            LOG(FATAL) << "The " << statement->symbolicTerm->name << " statement is not supported with the " << SMT_LOGIC_NAME() << " logic.";
+            LOG(ERROR) << "The " << statement->symbolicTerm->name << " statement is not supported with the " << SMT_LOGIC_NAME() << " logic.";
         }
 
         string assertion = SMT::Assert(SMT::Expr("=", {SMT::Var(statement->statementAtom), assertionStatement}));
@@ -279,5 +279,5 @@ string QF_LIA_logic::toString(TheoryAtomElement* element) {
         return SMT::Expr("+", terms, true);
     }
 
-    LOG(FATAL) << "Not yet supported";
+    LOG(ERROR) << "Not yet supported";
 }

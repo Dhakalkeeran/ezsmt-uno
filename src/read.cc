@@ -101,7 +101,7 @@ void Read::readRuleLine(istringstream &line) {
   }
 
   if (headType == DISJUNCTION && headLength > 1) {
-    LOG(FATAL) << "Disjunction rules with more than one head atom are not supported. Line: " + line.str();
+    LOG(ERROR) << "Disjunction rules with more than one head atom are not supported. Line: " + line.str();
   }
 
   for (int i = 0; i < headLength; i++) {
@@ -231,7 +231,7 @@ void Read::readTheoryStatements(list<string> &lines) {
         lineStream >> symbolicTermId;
         auto symbolicTerm = dynamic_cast<SymbolicTerm*>(program->theoryTerms[symbolicTermId]);
         if (symbolicTerm == nullptr) {
-          LOG(FATAL) << "Could not find symbolic theory term " << symbolicTermId << " referenced by line '" << line << "'";
+          LOG(ERROR) << "Could not find symbolic theory term " << symbolicTermId << " referenced by line '" << line << "'";
         }
 
         int numOfElements;
@@ -242,7 +242,7 @@ void Read::readTheoryStatements(list<string> &lines) {
           lineStream >> theoryAtomElementId;
           auto element = program->theoryAtomElements[theoryAtomElementId];
           if (element == nullptr) {
-            LOG(FATAL) << "Could not find theory atom element " << theoryAtomElementId << " referenced by line '" << line << "'";
+            LOG(ERROR) << "Could not find theory atom element " << theoryAtomElementId << " referenced by line '" << line << "'";
           }
           leftElements.push_back(element);
         }
@@ -251,14 +251,14 @@ void Read::readTheoryStatements(list<string> &lines) {
         lineStream >> operatorTermId;
         auto operatorTerm = dynamic_cast<SymbolicTerm*>(program->theoryTerms[operatorTermId]);
         if (operatorTerm == nullptr) {
-          LOG(FATAL) << "Could not find operator theory term " << operatorTermId << " referenced by line '" << line << "'";
+          LOG(ERROR) << "Could not find operator theory term " << operatorTermId << " referenced by line '" << line << "'";
         }
 
         int rightTermId;
         lineStream >> rightTermId;
         auto rightTerm = program->theoryTerms[rightTermId];
         if (rightTerm == nullptr) {
-          LOG(FATAL) << "Could not find right theory term " << rightTermId << " referenced by line '" << line << "'";
+          LOG(ERROR) << "Could not find right theory term " << rightTermId << " referenced by line '" << line << "'";
         }
 
         // for type specification statements
@@ -286,12 +286,12 @@ void Read::saveTypes(list<TheoryAtomElement*> leftElements, ITheoryTerm* rightTe
     transform(variableType.begin(), variableType.end(), variableType.begin(), ::tolower);
   }
   else {
-    LOG(FATAL) << "Only variables types such as 'int' and 'real' are allowed for type specifications." << endl;
+    LOG(ERROR) << "Only variables types such as 'int' and 'real' are allowed for type specifications." << endl;
   }
 
   for (auto element: leftElements) {
     if (element->terms.size() > 1) {
-      LOG(FATAL) << "Please use ';' instead of ',' to separate variables in type specifications." << endl;
+      LOG(ERROR) << "Please use ';' instead of ',' to separate variables in type specifications." << endl;
     }
     
     auto term = element->terms.front();
@@ -299,7 +299,7 @@ void Read::saveTypes(list<TheoryAtomElement*> leftElements, ITheoryTerm* rightTe
       program->typeMap[variable->name] = variableType;
     }
     else {
-      LOG(FATAL) << "Only variable names are allowed inside type specifications." << endl;
+      LOG(ERROR) << "Only variable names are allowed inside type specifications." << endl;
     }
   }
 }
@@ -349,7 +349,7 @@ void Read::readTheoryTerms(list<string> &lines) {
               lineStream >> childTermId;
               auto childTerm = program->theoryTerms[childTermId];
               if (childTerm == nullptr) {
-                LOG(FATAL) << "Could not find child theory term " << childTermId << " referenced by line '" << line << "'";
+                LOG(ERROR) << "Could not find child theory term " << childTermId << " referenced by line '" << line << "'";
               }
               tupleTerm->children.push_back(childTerm);
             }
@@ -357,7 +357,7 @@ void Read::readTheoryTerms(list<string> &lines) {
           } else {
             auto operationTerm = dynamic_cast<SymbolicTerm*>(program->theoryTerms[t]);
             if (operationTerm == nullptr) {
-              LOG(FATAL) << "Could not find symbolic operator theory term " << operationTerm << " referenced by line '" << line << "'";
+              LOG(ERROR) << "Could not find symbolic operator theory term " << operationTerm << " referenced by line '" << line << "'";
             }
 
             list<ITheoryTerm*> childTerms;
@@ -366,7 +366,7 @@ void Read::readTheoryTerms(list<string> &lines) {
               lineStream >> childTermId;
               auto childTerm = program->theoryTerms[childTermId];
               if (childTerm == nullptr) {
-                LOG(FATAL) << "Could not find child theory term " << childTermId << " referenced by line '" << line << "'";
+                LOG(ERROR) << "Could not find child theory term " << childTermId << " referenced by line '" << line << "'";
               }
               childTerms.push_back(childTerm);
             }
@@ -386,7 +386,7 @@ void Read::readTheoryTerms(list<string> &lines) {
                 } else if (auto numericTerm = dynamic_cast<NumericTerm*>(child)) {
                   symbolName << numericTerm->value;
                 } else {
-                  LOG(FATAL) << "Constraint variables can only contain numeric or symbolic terms. Line: " << line;
+                  LOG(ERROR) << "Constraint variables can only contain numeric or symbolic terms. Line: " << line;
                 }
 
                 // if (child != childTerms.back()) {
@@ -434,7 +434,7 @@ void Read::readTheoryAtomElements(list<string> &lines) {
           lineStream >> termId;
           auto theoryTerm = program->theoryTerms[termId];
           if (theoryTerm == nullptr) {
-            LOG(FATAL) << "Could not find definition for theory term " << termId << " referenced in '" << line << "'";
+            LOG(ERROR) << "Could not find definition for theory term " << termId << " referenced in '" << line << "'";
           }
 
           theoryAtomElements->terms.push_back(theoryTerm);
@@ -448,7 +448,7 @@ void Read::readTheoryAtomElements(list<string> &lines) {
           int atomId = abs(literal);
           auto atom = atoms[atomId];
           if (atom == nullptr) {
-            LOG(FATAL) << "Could not find definition for atom " << atomId << " referenced in '" << line << "'";
+            LOG(ERROR) << "Could not find definition for atom " << atomId << " referenced in '" << line << "'";
           }
 
           theoryAtomElements->literals.push_back(AtomLiteral(atom, literal >= 0));
@@ -567,7 +567,7 @@ int Read::read(string fileName) {
       }
     }
   } catch (exception e) {
-    LOG(FATAL) << "Failed to parse grounded logic program."
+    LOG(ERROR) << "Failed to parse grounded logic program."
                << " Stopped at " << fileName << ":" << lineNumber
                << " Got exception message: " << e.what();
   }

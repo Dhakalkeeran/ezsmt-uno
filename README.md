@@ -159,4 +159,4 @@ clang-format -i src/*.cc src/*.h tests/*.cc
 
 # For Developers extending EZSMT logics
 ## Theory Specifications
-The theory specifications for all currently supported logics is found in the header file ["src/theorySpecs.h"](/src/theorySpecs.h).
+The theory specifications for all currently supported logics are found in the header file [src/theorySpecs.h](/src/theorySpecs.h).

@@ -108,7 +108,7 @@ public:
             return SMT::Expr(t->operation->name, childTerms);
         }
 
-        LOG(FATAL) << "Unsupported term type";
+        LOG(ERROR) << "Unsupported term type";
     }
 private:
     static string escape(string name) {
